@@ -9,7 +9,8 @@ export default async function TasksPage({ searchParams }: { searchParams: Promis
   if (!user) return null
   let query = supabase.from('tasks').select('*, assignee:profiles!tasks_assigned_to_fkey(full_name), assigner:profiles!tasks_assigned_by_fkey(full_name)').order('due_at', { ascending: true, nullsFirst: false })
   query = view === 'assigned' ? query.eq('assigned_by', user.id) : query.eq('assigned_to', user.id)
-  const { data: tasks = [] } = await query
+  const { data } = await query
+  const tasks = data ?? []
   const open = tasks.filter(t => t.status !== 'closed')
   const overdue = open.filter(t => t.due_at && new Date(t.due_at) < new Date()).length
   const awaiting = tasks.filter(t => t.status === 'awaiting_approval').length
