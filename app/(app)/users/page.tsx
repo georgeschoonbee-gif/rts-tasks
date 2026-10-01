@@ -100,7 +100,7 @@ export default async function UsersPage({
             {users.map((item) => (
               <tr key={item.id}>
                 <td><strong>{item.full_name}</strong></td>
-                <td>{item.department?.name || 'Not assigned'}</td>
+                <td>{Array.isArray(item.department) ? item.department[0]?.name || 'Not assigned' : item.department?.name || 'Not assigned'}</td>
                 <td>{item.role}</td>
                 <td>{item.active ? 'Active' : 'Inactive'}</td>
               </tr>
