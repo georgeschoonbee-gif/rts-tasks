@@ -24,12 +24,13 @@ export default async function UsersPage({
     supabase.from('departments').select('id, name').eq('active', true).order('name'),
     supabase
       .from('profiles')
-      .select('id, full_name, role, active, department:departments(name)')
+      .select('id, full_name, role, active, department_id')
       .order('full_name'),
   ])
 
   const departments = departmentsResult.data ?? []
   const users = usersResult.data ?? []
+  const departmentNames = new Map(departments.map((department) => [department.id, department.name]))
 
   return (
     <>
@@ -100,7 +101,7 @@ export default async function UsersPage({
             {users.map((item) => (
               <tr key={item.id}>
                 <td><strong>{item.full_name}</strong></td>
-                <td>{Array.isArray(item.department) ? item.department[0]?.name || 'Not assigned' : item.department?.name || 'Not assigned'}</td>
+                <td>{item.department_id ? departmentNames.get(item.department_id) || 'Not assigned' : 'Not assigned'}</td>
                 <td>{item.role}</td>
                 <td>{item.active ? 'Active' : 'Inactive'}</td>
               </tr>
