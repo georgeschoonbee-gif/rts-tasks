@@ -7,7 +7,8 @@ export default async function ManagementPage() {
   if (!user) redirect('/login')
   const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single()
   if (!profile || !['manager','admin'].includes(profile.role)) redirect('/tasks')
-  const { data: tasks = [] } = await supabase.from('tasks').select('*, assignee:profiles!tasks_assigned_to_fkey(full_name), assigner:profiles!tasks_assigned_by_fkey(full_name), department:departments(name)').order('created_at', { ascending: false })
+  const { data } = await supabase.from('tasks').select('*, assignee:profiles!tasks_assigned_to_fkey(full_name), assigner:profiles!tasks_assigned_by_fkey(full_name), department:departments(name)').order('created_at', { ascending: false })
+  const tasks = data ?? []
   const open = tasks.filter(t=>t.status !== 'closed')
   const overdue = open.filter(t=>t.due_at && new Date(t.due_at)<new Date()).length
   return (
