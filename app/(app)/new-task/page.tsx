@@ -4,10 +4,13 @@ import { createTask } from './actions'
 export default async function NewTaskPage({ searchParams }: { searchParams: Promise<{ error?: string }> }) {
   const { error } = await searchParams
   const supabase = await createClient()
-  const [{ data: workers = [] }, { data: departments = [] }] = await Promise.all([
+  const [workersResult, departmentsResult] = await Promise.all([
     supabase.from('profiles').select('id, full_name, role').eq('active', true).order('full_name'),
     supabase.from('departments').select('id, name').eq('active', true).order('name')
   ])
+  const workers = workersResult.data ?? []
+  const departments = departmentsResult.data ?? []
+
   return (
     <>
       <div className="page-head"><div><h1>New Task</h1><p>Assign a task to a worker and set the expected completion date.</p></div></div>
