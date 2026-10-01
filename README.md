@@ -73,3 +73,5 @@ npm run dev
 - Browser push notifications / installed-PWA notifications
 - Recurring tasks
 - Reports and worker/task filters
+
+Deployment trigger: 2026-10-01.
